@@ -41,11 +41,16 @@ h1{
   opacity:.9;
 }
 
+/* ✅ Bigger button zone + gap before message so NO never covers text */
 .row{
+  position: relative;       /* make NO position relative to this area */
   display:flex;
   justify-content:center;
+  align-items:center;
   gap:14px;
   margin-top: 14px;
+  height: 150px;            /* more space to dodge */
+  margin-bottom: 15px;      /* gap before message */
 }
 
 button{
@@ -65,19 +70,21 @@ button:active{
 #yes{
   background:#23c55e;
   color:white;
+  z-index: 2;
 }
 
 #no{
   background:#ef4444;
   color:white;
-  position: absolute;
-  left: 50%;
-  top: 165px;
-  transform: translateX(60px);
+  position: absolute;       /* stays inside .row */
+  left: 60%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
 }
 
 .msg{
-  margin-top: 18px;
+  margin-top: 0;            /* spacing now handled by .row margin-bottom */
   font-size: 18px;
   color:#111827;
   font-weight: 600;
@@ -104,7 +111,7 @@ button:active{
   <h1>Will you be my Valentine? 💕</h1>
   <p class="sub">Be honest… but choose wisely 😄</p>
 
-  <div class="row">
+  <div class="row" id="row">
     <button id="yes">Yes</button>
     <button id="no">No</button>
   </div>
@@ -113,11 +120,10 @@ button:active{
 </div>
 
 <script>
-
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
 const msg = document.getElementById("msg");
-const card = document.getElementById("card");
+const row = document.getElementById("row");
 
 let dodgeCount = 0;
 
@@ -137,30 +143,27 @@ const romanticLines = [
   "Don’t you love me? 😢"
 ];
 
-
-function randomPositionWithinCard() {
-
+function randomPositionWithinRow() {
   const pad = 12;
 
-  const rect = card.getBoundingClientRect();
+  const rect = row.getBoundingClientRect();
   const btnRect = noBtn.getBoundingClientRect();
 
   const maxX = rect.width - btnRect.width - pad;
   const maxY = rect.height - btnRect.height - pad;
 
-  const x = Math.max(pad, Math.random() * maxX);
-  const y = Math.max(pad, Math.random() * maxY);
+  const x = pad + Math.random() * Math.max(0, maxX);
 
-  const safeY = Math.max(y, 110);
+  // ✅ keep NO away from the very bottom of the row (extra safety)
+  const y = pad + Math.random() * Math.max(0, maxY - 20);
 
-  return { x, y: safeY };
+  return { x, y };
 }
 
 function dodge() {
-
   dodgeCount++;
 
-  const { x, y } = randomPositionWithinCard();
+  const { x, y } = randomPositionWithinRow();
 
   noBtn.style.left = x + "px";
   noBtn.style.top  = y + "px";
@@ -174,18 +177,16 @@ noBtn.addEventListener("mouseenter", dodge);
 noBtn.addEventListener("click", dodge);
 
 yesBtn.addEventListener("click", () => {
-
   msg.textContent =
-  "I knew you would say YES 😭💖💞💘💕💓💗💋😘🥰 You just made my heart the happiest in the world 💕💋 Thank you for choosing me, for choosing us, for choosing love ❤️ Thank you 😘";
+    "I knew you would say YES 😭💖💞💘💕💓💗💋😘🥰 You just made my heart the happiest in the world 💕💋 Thank you for choosing me, for choosing us, for choosing love ❤️ Thank you 😘";
 
   noBtn.style.display = "none";
   yesBtn.textContent = "Forever starts now 💍💖";
 });
 
+// initial placement
 dodge();
-
 </script>
 
 </body>
 </html>
-
