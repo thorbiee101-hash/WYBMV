@@ -38,19 +38,15 @@ h1{
 .sub{
   margin: 0 0 18px;
   color:#7a0028;
-  opacity:.9;
+  font-weight:600;
 }
 
-/* ✅ Bigger button zone + gap before message so NO never covers text */
+/* Cleaner centered spacing */
 .row{
-  position: relative;       /* make NO position relative to this area */
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:14px;
-  margin-top: 14px;
-  height: 150px;            /* more space to dodge */
-  margin-bottom: 15px;      /* gap before message */
+  position: relative;
+  height: 150px;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
 button{
@@ -59,34 +55,32 @@ button{
   border-radius: 12px;
   font-size: 16px;
   cursor:pointer;
-  transition: transform .08s ease;
+  transition: .2s ease;
   box-shadow: 0 8px 18px rgba(0,0,0,.12);
 }
 
-button:active{
-  transform: scale(.98);
-}
-
+/* ✅ Reduced spacing (balanced look) */
 #yes{
   background:#23c55e;
   color:white;
-  z-index: 2;
+  position:absolute;
+  left:30%;
+  top:50%;
+  transform: translate(-50%, -50%);
 }
 
 #no{
   background:#ef4444;
   color:white;
-  position: absolute;       /* stays inside .row */
-  left: 60%;
-  top: 50%;
+  position:absolute;
+  left:70%;
+  top:50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
 }
 
 .msg{
-  margin-top: 0;            /* spacing now handled by .row margin-bottom */
+  margin-top: 0;
   font-size: 18px;
-  color:#111827;
   font-weight: 600;
   min-height: 24px;
 }
@@ -105,11 +99,11 @@ button:active{
 
 <body>
 
-<div class="card" id="card">
+<div class="card">
   <div class="heart"></div>
 
   <h1>Will you be my Valentine? 💕</h1>
-  <p class="sub">Be honest… but choose wisely 😄</p>
+  <p class="sub">Sweet Fanta Diallo 😌</p>
 
   <div class="row" id="row">
     <button id="yes">Yes</button>
@@ -128,24 +122,20 @@ const row = document.getElementById("row");
 let dodgeCount = 0;
 
 const romanticLines = [
-  "Are you sure, my love? 🥺",
+  "You know I can’t do without you 🥺",
   "But I was saving all my smiles for you… 💗",
   "Will you really break my heart like this? 💔",
   "What if I promise to treat you like royalty? 👑",
-  "Who will I disturb every day if you say no? 😭",
-  "My heart is literally shaking right now 🫶",
-  "Imagine how cute we would look together 🥰",
-  "Don’t do this to me na 😩",
-  "My whole future is flashing before my eyes 😭",
   "Even the universe wants us together 💫💕",
   "Are you really going to say No to this sweet, handsome, beautiful man whose heart beats only for you? 😌💘",
   "Even Sis Ore would ask you to say YES oh 😭",
   "Don’t you love me? 😢"
 ];
 
+msg.textContent = romanticLines[0];
+
 function randomPositionWithinRow() {
   const pad = 12;
-
   const rect = row.getBoundingClientRect();
   const btnRect = noBtn.getBoundingClientRect();
 
@@ -153,8 +143,6 @@ function randomPositionWithinRow() {
   const maxY = rect.height - btnRect.height - pad;
 
   const x = pad + Math.random() * Math.max(0, maxX);
-
-  // ✅ keep NO away from the very bottom of the row (extra safety)
   const y = pad + Math.random() * Math.max(0, maxY - 20);
 
   return { x, y };
@@ -164,12 +152,11 @@ function dodge() {
   dodgeCount++;
 
   const { x, y } = randomPositionWithinRow();
-
   noBtn.style.left = x + "px";
   noBtn.style.top  = y + "px";
-  noBtn.style.transform = "none";
+  noBtn.style.transform = "translate(0, 0)";
 
-  const idx = Math.min(dodgeCount - 1, romanticLines.length - 1);
+  const idx = Math.min(dodgeCount, romanticLines.length - 1);
   msg.textContent = romanticLines[idx];
 }
 
@@ -178,14 +165,9 @@ noBtn.addEventListener("click", dodge);
 
 yesBtn.addEventListener("click", () => {
   msg.textContent =
-    "I knew you would say YES 😭💖💞💘💕💓💗💋😘🥰 You just made my heart the happiest in the world 💕💋 Thank you for choosing me, for choosing us, for choosing love ❤️ Thank you 😘";
-
+    "I knew you would say YES 😭💖💞💘💕💓💗💋😘🥰 You just made my heart the happiest in the world 💕 Thank you for choosing me ❤️";
   noBtn.style.display = "none";
-  yesBtn.textContent = "Forever starts now 💍💖";
 });
-
-// initial placement
-dodge();
 </script>
 
 </body>
